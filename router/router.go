@@ -7,9 +7,9 @@ import (
 )
 
 func Router() *gin.Engine {
-	engine := gin.Default()
+	r := gin.Default()
 
-	engine.POST("/send_code", controller.SendCode)
+	r.POST("/send_code", controller.SendCode)
 
-	return engine
+	return r
 }
