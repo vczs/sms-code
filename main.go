@@ -1,8 +1,13 @@
 package main
 
-import "sms-code/router"
+import (
+	"fmt"
+	"sms-code/config"
+	"sms-code/router"
+)
 
 func main() {
+	config.InitConfig()
 	engine := router.Router()
-	engine.Run(":8080")
+	engine.Run(fmt.Sprintf(":%d", config.GetConfig().Port))
 }
