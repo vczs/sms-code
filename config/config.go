@@ -1,8 +1,8 @@
 package config
 
 import (
-	"io/ioutil"
 	"log"
+	"os"
 
 	"gopkg.in/yaml.v3"
 )
@@ -19,7 +19,7 @@ type Config struct {
 
 func InitConfig() {
 	c = Config{}
-	data, err := ioutil.ReadFile("config/config.yaml")
+	data, err := os.ReadFile("config/config.yaml")
 	if err != nil {
 		log.Fatalln("read ymal file failed", err)
 	}
