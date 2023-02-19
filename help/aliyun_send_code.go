@@ -44,8 +44,8 @@ func AlibabaSendSmsCode(phoneNumbers string, code string) error {
 		if _err != nil {
 			return _err
 		}
-		if *result.StatusCode != 200 {
-			return errors.New("send sms code failed")
+		if *result.Body.Code != "OK" {
+			return errors.New(*result.Body.Message)
 		}
 		return nil
 	}()

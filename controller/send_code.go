@@ -57,7 +57,7 @@ func SendCode(c *gin.Context) {
 	// 发送验证码
 	err = help.AlibabaSendSmsCode(phoneNumbers, code)
 	if err != nil {
-		help.VczLog("get number ttl from redis error", err)
+		help.VczLog("alibab send sms code failed", err)
 		Res(c, define.CODE_SEND_FAILED, "")
 		return
 	}
