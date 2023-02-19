@@ -4,9 +4,9 @@ import "os"
 
 var RedisCodeCountTitle string = "c" // 验证码发送次数title
 
-var MaxCodeCount = 10   // 用户自然日发送短信上限
-var CodeLength int = 6  // 验证码长度
-var CodeExpire int = 60 // 验证码过期时间
+var MaxCodeCount = 10    // 用户自然日发送短信上限
+var CodeLength int = 6   // 验证码长度
+var CodeExpire int = 300 // 验证码过期时间
 
 var SmsService = AlibabService // 使用哪个短信服务商    1:阿里云  2:腾讯云
 
