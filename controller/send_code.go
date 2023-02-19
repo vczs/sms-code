@@ -41,6 +41,7 @@ func SendCode(c *gin.Context) {
 			return
 		}
 	}
+
 	// 限频
 	down, err := db.Redis.TTL(c, phoneNumbers).Result()
 	if err != nil {
@@ -52,15 +53,25 @@ func SendCode(c *gin.Context) {
 		Res(c, define.REQUEST_OFTEN, "")
 		return
 	}
-	// 生成验证码
-	code := help.GenerateCode()
+
 	// 发送验证码
-	err = help.AlibabaSendSmsCode(phoneNumbers, code)
-	if err != nil {
-		help.VczLog("alibab send sms code failed", err)
-		Res(c, define.CODE_SEND_FAILED, "")
-		return
+	code := help.GenerateCode()
+	if define.SmsService == define.AlibabService {
+		err = help.AlibabaSendSmsCode(phoneNumbers, code)
+		if err != nil {
+			help.VczLog("alibab send sms code failed", err)
+			Res(c, define.CODE_SEND_FAILED, "")
+			return
+		}
+	} else {
+		err = help.TencentSendSmsCode(phoneNumbers, code)
+		if err != nil {
+			help.VczLog("tencent send sms code failed", err)
+			Res(c, define.CODE_SEND_FAILED, "")
+			return
+		}
 	}
+
 	// 存储验证码
 	err = db.Redis.Set(c, phoneNumbers, code, time.Second*time.Duration(define.CodeExpire)).Err()
 	if err != nil {

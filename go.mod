@@ -9,6 +9,8 @@ require (
 	github.com/alibabacloud-go/tea-utils/v2 v2.0.1
 	github.com/gin-gonic/gin v1.8.2
 	github.com/redis/go-redis/v9 v9.0.2
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.597
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.597
 	gopkg.in/yaml.v3 v3.0.1
 )
 
