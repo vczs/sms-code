@@ -8,7 +8,7 @@ func CheckNumber(phone string) bool {
 	// [345789]{1} 后接一位345789 的数字
 	// \\d \d的转义 表示数字 {9} 接9位
 	// $ 结束符
-	regRuler := "^1[345789]{1}\\d{9}$"
+	regRuler := "^1[3456789]{1}\\d{9}$"
 
 	// 正则调用规则
 	reg := regexp.MustCompile(regRuler)
