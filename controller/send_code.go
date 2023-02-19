@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"sms-code/db"
 	"sms-code/define"
 	"sms-code/help"
@@ -43,15 +44,35 @@ func SendCode(c *gin.Context) {
 	}
 
 	// 限频
-	down, err := db.Redis.TTL(c, phoneNumbers).Result()
+	count := 0
+	countDown, err := db.Redis.TTL(c, define.RedisCodeCountTitle+phoneNumbers).Result()
 	if err != nil {
-		help.VczLog("get number ttl from redis error", err)
+		help.VczLog("get number code count ttl from redis error", err)
 		Res(c, -1, err.Error())
 		return
 	}
-	if down > 0 {
-		Res(c, define.REQUEST_OFTEN, "")
-		return
+	if countDown > 0 {
+		count, err = db.Redis.Get(c, define.RedisCodeCountTitle+phoneNumbers).Int()
+		if err != nil {
+			help.VczLog("get number code count from redis error", err)
+			Res(c, -1, err.Error())
+			return
+		}
+		if count >= define.MaxCodeCount {
+			Res(c, define.MANX_CODE_COUNT, fmt.Sprintf("今日获取短信数量上限，请%s后再来!", countDown))
+			return
+		}
+
+		codeDown, err := db.Redis.TTL(c, phoneNumbers).Result()
+		if err != nil {
+			help.VczLog("get number code ttl from redis error", err)
+			Res(c, -1, err.Error())
+			return
+		}
+		if codeDown > 0 && count%2 == 0 {
+			Res(c, define.REQUEST_OFTEN, "")
+			return
+		}
 	}
 
 	// 发送验证码
@@ -78,6 +99,23 @@ func SendCode(c *gin.Context) {
 		help.VczLog("set code to redis error", err)
 		Res(c, -1, err.Error())
 		return
+	}
+
+	// 存储验证码发送次数
+	if count > 0 {
+		err = db.Redis.Set(c, define.RedisCodeCountTitle+phoneNumbers, count+1, -1).Err()
+		if err != nil {
+			help.VczLog("set code count to redis error", err)
+			Res(c, -1, err.Error())
+			return
+		}
+	} else {
+		err = db.Redis.Set(c, define.RedisCodeCountTitle+phoneNumbers, 1, time.Hour*24).Err()
+		if err != nil {
+			help.VczLog("set code count to redis error", err)
+			Res(c, -1, err.Error())
+			return
+		}
 	}
 
 	Res(c, define.OK, "发送成功")

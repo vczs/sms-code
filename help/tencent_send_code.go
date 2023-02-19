@@ -2,7 +2,6 @@ package help
 
 import (
 	"errors"
-	"fmt"
 	"sms-code/define"
 
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
@@ -28,7 +27,6 @@ func TencentSendSmsCode(phoneNumbers string, code string) error {
 		return err
 	}
 	if *response.Response.SendStatusSet[0].Code != "Ok" {
-		fmt.Println(*response.Response.SendStatusSet[0].Code)
 		return errors.New(*response.Response.SendStatusSet[0].Message)
 	}
 
